@@ -31,7 +31,7 @@ enum HandShape: Int {
     }
   }
 
-  func compare(_ other: Self) -> CompetitionResult {
+  func compete(_ other: Self) -> CompetitionResult {
     if self == other { return .tie }
     return other == beats ? .win : .lose
   }
@@ -52,25 +52,29 @@ public struct Day02 {
     self.input = input
   }
 
-  var part1TotalScore: Int {
+  func score(using block: (Substring) -> (HandShape, CompetitionResult)) -> Int {
     input.lines
       .map {
-        let opponentShape = HandShape($0.first!)
-        let myShape = HandShape($0.last!)
-        return myShape.rawValue + myShape.compare(opponentShape).rawValue
+        let (shape, result) = block($0)
+        return shape.rawValue + result.rawValue
       }
       .reduce(0, +)
   }
 
+  var part1TotalScore: Int {
+    score {
+      let opponentShape = HandShape($0.first!)
+      let myShape = HandShape($0.last!)
+      return (myShape, myShape.compete(opponentShape))
+    }
+  }
+
   var part2TotalScore: Int {
-    input.lines
-      .map {
-        let opponentShape = HandShape($0.first!)
-        let desiredResult = CompetitionResult($0.last!)
-        let myShape = opponentShape.shape(for: desiredResult)
-        return desiredResult.rawValue + myShape.rawValue
-      }
-      .reduce(0, +)
+    score {
+      let opponentShape = HandShape($0.first!)
+      let desiredResult = CompetitionResult($0.last!)
+      return (opponentShape.shape(for: desiredResult), desiredResult)
+    }
   }
 }
 
