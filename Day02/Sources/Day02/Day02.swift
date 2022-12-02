@@ -1,5 +1,14 @@
 enum CompetitionResult: Int {
   case win = 6, tie = 3, lose = 0
+
+  init(_ c: Character) {
+    switch c {
+    case "X": self = .lose
+    case "Y": self = .tie
+    case "Z": self = .win
+    default: fatalError()
+    }
+  }
 }
 
 enum HandShape: Int {
@@ -26,6 +35,14 @@ enum HandShape: Int {
     if self == other { return .tie }
     return other == beats ? .win : .lose
   }
+
+  func shape(for result: CompetitionResult) -> Self {
+    switch result {
+    case .win: return beats.beats
+    case .tie: return self
+    case .lose: return beats
+    }
+  }
 }
 
 public struct Day02 {
@@ -35,15 +52,24 @@ public struct Day02 {
     self.input = input
   }
 
-  func lineScore(_ line: some StringProtocol) -> Int {
-    let opponentShape = HandShape(line.first!)
-    let myShape = HandShape(line.last!)
-    return myShape.rawValue + myShape.compare(opponentShape).rawValue
+  var part1TotalScore: Int {
+    input.lines
+      .map {
+        let opponentShape = HandShape($0.first!)
+        let myShape = HandShape($0.last!)
+        return myShape.rawValue + myShape.compare(opponentShape).rawValue
+      }
+      .reduce(0, +)
   }
 
-  var totalScore: Int {
+  var part2TotalScore: Int {
     input.lines
-      .map { lineScore($0) }
+      .map {
+        let opponentShape = HandShape($0.first!)
+        let desiredResult = CompetitionResult($0.last!)
+        let myShape = opponentShape.shape(for: desiredResult)
+        return desiredResult.rawValue + myShape.rawValue
+      }
       .reduce(0, +)
   }
 }
