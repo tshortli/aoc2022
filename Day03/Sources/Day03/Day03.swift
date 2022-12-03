@@ -7,15 +7,28 @@ public struct Day03 {
 
   var itemTypeSum: Int {
     input.lines
+      .map { [$0.prefix($0.count / 2), $0.suffix($0.count / 2)] }
       .map { duplicateItem(in: $0) }
       .map { priority($0) }
       .reduce(0, +)
   }
 
-  func duplicateItem(in line: Substring) -> Character {
-    let compartment1 = Set(line.prefix(line.count / 2))
-    let compartment2 = Set(line.suffix(line.count / 2))
-    return compartment1.intersection(compartment2).first!
+  var badgePrioritySum: Int {
+    input.lines
+      .chunks(of: 3)
+      .map { duplicateItem(in: $0) }
+      .map { priority($0) }
+      .reduce(0, +)
+
+  }
+
+  func duplicateItem(in substrings: [Substring]) -> Character {
+    var intersection = Set(substrings.first!)
+    for substring in substrings[1...] {
+      intersection.formIntersection(Set(substring))
+    }
+    assert(intersection.count == 1)
+    return intersection.first!
   }
 
   func priority(_ c: Character) -> Int {
@@ -26,6 +39,26 @@ public struct Day03 {
       return Int(c.asciiValue! - Character("A").asciiValue!) + 27
     }
     fatalError()
+  }
+}
+
+private extension Sequence {
+
+  func chunks(of size: Int) -> [[Element]] {
+    assert(size > 0)
+
+    var chunks: [[Element]] = []
+    var current: [Element] = []
+
+    for element in self {
+      current.append(element)
+      if current.count == size {
+        chunks.append(current)
+        current.removeAll(keepingCapacity: true)
+      }
+    }
+
+    return chunks
   }
 }
 
