@@ -29,18 +29,19 @@ private extension ClosedRange<Int> {
 }
 
 private extension Substring {
-  func split(on c: Character) -> (Substring, Substring) {
-    let components = split(separator: c)
-    return (components[0], components[1])
-  }
-
-  var range: ClosedRange<Int> {
-    let components = split(on: "-")
-    return Int(components.0)!...Int(components.1)!
-  }
-
   var ranges: (ClosedRange<Int>, ClosedRange<Int>) {
-    let components = split(on: ",")
-    return (components.0.range, components.1.range)
+    parse { $0.parseIntRanges() }
+  }
+}
+
+private extension Parser {
+  mutating func parseIntRanges() -> (ClosedRange<Int>, ClosedRange<Int>) {
+    let (a, _, b) = (parseIntRange(), consume(","), parseIntRange())
+    return (a, b)
+  }
+
+  mutating func parseIntRange() -> ClosedRange<Int> {
+    let (start, _, end) = (parseInt(), consume("-"), parseInt())
+    return start...end
   }
 }
