@@ -44,7 +44,3 @@ private extension Substring {
     return (components.0.range, components.1.range)
   }
 }
-
-private extension String {
-  var lines: [Substring] { split(separator: "\n") }
-}

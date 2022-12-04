@@ -74,10 +74,6 @@ private extension Sequence {
   }
 }
 
-private extension String {
-  var lines: [Substring] { split(separator: "\n") }
-}
-
 private extension StringProtocol {
   var halves: [SubSequence] {
     let halfCount = count / 2

@@ -29,9 +29,3 @@ public struct Day01 {
     caloriesPerElf.sorted().suffix(elfCount).reduce(0, +)
   }
 }
-
-private extension String {
-  var lines: [Substring] {
-    split(separator: "\n", omittingEmptySubsequences: false)
-  }
-}

@@ -77,7 +77,3 @@ public struct Day02 {
     }
   }
 }
-
-private extension String {
-  var lines: [Substring] { split(separator: "\n") }
-}
