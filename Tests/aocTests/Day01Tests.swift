@@ -20,23 +20,23 @@ final class Day01Tests: XCTestCase {
       """
 
   func testPart1Example() {
-    let solver = Day01(input: exampleInput, elfCount: 1)
-    XCTAssertEqual(solver.solution, 24000)
+    let solver = Day01(input: exampleInput)
+    XCTAssertEqual(solver.part1Solution, 24000)
   }
 
   func testPart1() {
-    let solver = Day01(input: puzzleInput, elfCount: 1)
-    XCTAssertEqual(solver.solution, 69177)
+    let solver = Day01(input: puzzleInput)
+    XCTAssertEqual(solver.part1Solution, 69177)
   }
 
   func testPart2Example() {
-    let solver = Day01(input: exampleInput, elfCount: 3)
-    XCTAssertEqual(solver.solution, 45000)
+    let solver = Day01(input: exampleInput)
+    XCTAssertEqual(solver.part2Solution, 45000)
   }
 
   func testPart2() {
-    let solver = Day01(input: puzzleInput, elfCount: 3)
-    XCTAssertEqual(solver.solution, 207456)
+    let solver = Day01(input: puzzleInput)
+    XCTAssertEqual(solver.part2Solution, 207456)
   }
 }
 

@@ -10,22 +10,22 @@ final class Day02Tests: XCTestCase {
 
   func testPart1Example() throws {
     let solver = Day02(input: exampleInput)
-    XCTAssertEqual(solver.part1TotalScore, 15)
+    XCTAssertEqual(solver.part1Solution, 15)
   }
 
   func testPart1() throws {
     let solver = Day02(input: puzzleInput)
-    XCTAssertEqual(solver.part1TotalScore, 8392)
+    XCTAssertEqual(solver.part1Solution, 8392)
   }
 
   func testPart2Example() throws {
     let solver = Day02(input: exampleInput)
-    XCTAssertEqual(solver.part2TotalScore, 12)
+    XCTAssertEqual(solver.part2Solution, 12)
   }
 
   func testPart2() throws {
     let solver = Day02(input: puzzleInput)
-    XCTAssertEqual(solver.part2TotalScore, 10116)
+    XCTAssertEqual(solver.part2Solution, 10116)
   }
 }
 

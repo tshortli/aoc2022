@@ -1,12 +1,8 @@
 public struct Day01 {
   let input: String
-  let elfCount: Int
 
-  public init(input: String, elfCount: Int) {
-    assert(elfCount > 0)
-
+  public init(input: String) {
     self.input = input
-    self.elfCount = elfCount
   }
 
   var caloriesPerElf: [Int] {
@@ -25,7 +21,11 @@ public struct Day01 {
     return calories
   }
 
-  public var solution: Int {
-    caloriesPerElf.sorted().suffix(elfCount).reduce(0, +)
+  public var part1Solution: Int {
+    caloriesPerElf.sorted().suffix(1).reduce(0, +)
+  }
+
+  public var part2Solution: Int {
+    caloriesPerElf.sorted().suffix(3).reduce(0, +)
   }
 }

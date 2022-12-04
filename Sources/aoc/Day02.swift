@@ -1,3 +1,36 @@
+public struct Day02 {
+  let input: String
+
+  public init(input: String) {
+    self.input = input
+  }
+
+  func score(using block: (Substring) -> (HandShape, CompetitionResult)) -> Int {
+    input.lines
+      .map {
+        let (shape, result) = block($0)
+        return shape.rawValue + result.rawValue
+      }
+      .reduce(0, +)
+  }
+
+  public var part1Solution: Int {
+    score {
+      let opponentShape = HandShape($0.first!)
+      let myShape = HandShape($0.last!)
+      return (myShape, myShape.compete(opponentShape))
+    }
+  }
+
+  public var part2Solution: Int {
+    score {
+      let opponentShape = HandShape($0.first!)
+      let desiredResult = CompetitionResult($0.last!)
+      return (opponentShape.shape(for: desiredResult), desiredResult)
+    }
+  }
+}
+
 enum CompetitionResult: Int {
   case win = 6, tie = 3, lose = 0
 
@@ -41,39 +74,6 @@ enum HandShape: Int {
     case .win: return beats.beats
     case .tie: return self
     case .lose: return beats
-    }
-  }
-}
-
-public struct Day02 {
-  let input: String
-
-  public init(input: String) {
-    self.input = input
-  }
-
-  func score(using block: (Substring) -> (HandShape, CompetitionResult)) -> Int {
-    input.lines
-      .map {
-        let (shape, result) = block($0)
-        return shape.rawValue + result.rawValue
-      }
-      .reduce(0, +)
-  }
-
-  public var part1TotalScore: Int {
-    score {
-      let opponentShape = HandShape($0.first!)
-      let myShape = HandShape($0.last!)
-      return (myShape, myShape.compete(opponentShape))
-    }
-  }
-
-  public var part2TotalScore: Int {
-    score {
-      let opponentShape = HandShape($0.first!)
-      let desiredResult = CompetitionResult($0.last!)
-      return (opponentShape.shape(for: desiredResult), desiredResult)
     }
   }
 }

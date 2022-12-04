@@ -13,22 +13,22 @@ final class Day03Tests: XCTestCase {
   
   func testPart1Example() throws {
     let solver = Day03(input: exampleInput)
-    XCTAssertEqual(solver.itemTypeSum, 157)
+    XCTAssertEqual(solver.part1Solution, 157)
   }
 
   func testPart1() throws {
     let solver = Day03(input: puzzleInput)
-    XCTAssertEqual(solver.itemTypeSum, 7811)
+    XCTAssertEqual(solver.part1Solution, 7811)
   }
 
   func testPart2Example() throws {
     let solver = Day03(input: exampleInput)
-    XCTAssertEqual(solver.badgePrioritySum, 70)
+    XCTAssertEqual(solver.part2Solution, 70)
   }
 
   func testPart2() throws {
     let solver = Day03(input: puzzleInput)
-    XCTAssertEqual(solver.badgePrioritySum, 2639)
+    XCTAssertEqual(solver.part2Solution, 2639)
   }
 }
 
