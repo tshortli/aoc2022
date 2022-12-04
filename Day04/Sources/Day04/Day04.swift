@@ -6,17 +6,11 @@ public struct Day04 {
   }
   
   var part1Solution: Int {
-    input.lines
-      .map { $0.ranges }
-      .map { oneRangeIsContained($0) ? 1 : 0 }
-      .reduce(0, +)
+    input.lines.reduce(0) { oneRangeIsContained($1.ranges) ? $0 + 1 : $0 }
   }
 
   var part2Solution: Int {
-    input.lines
-      .map { $0.ranges }
-      .map { rangesIntersect($0) ? 1 : 0 }
-      .reduce(0, +)
+    input.lines.reduce(0) { rangesIntersect($1.ranges) ? $0 + 1 : $0 }
   }
 
   func oneRangeIsContained(_ ranges: (ClosedRange<Int>, ClosedRange<Int>)) -> Bool {
@@ -24,17 +18,13 @@ public struct Day04 {
   }
 
   func rangesIntersect(_ ranges: (ClosedRange<Int>, ClosedRange<Int>)) -> Bool {
-    ranges.0.intersects(ranges.1) || ranges.1.intersects(ranges.0)
+    ranges.0.overlaps(ranges.1) || ranges.1.overlaps(ranges.0)
   }
 }
 
 private extension ClosedRange<Int> {
   func contains(_ other: Self) -> Bool {
-    contains(other.first!) && contains(other.last!)
-  }
-
-  func intersects(_ other: Self) -> Bool {
-    contains(other.first!) || contains(other.last!)
+    contains(other.lowerBound) && contains(other.upperBound)
   }
 }
 
