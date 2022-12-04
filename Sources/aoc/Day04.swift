@@ -5,11 +5,11 @@ public struct Day04 {
     self.input = input
   }
   
-  var part1Solution: Int {
+  public var part1Solution: Int {
     input.lines.reduce(0) { oneRangeIsContained($1.ranges) ? $0 + 1 : $0 }
   }
 
-  var part2Solution: Int {
+  public var part2Solution: Int {
     input.lines.reduce(0) { rangesIntersect($1.ranges) ? $0 + 1 : $0 }
   }
 
