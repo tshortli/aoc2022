@@ -1,5 +1,5 @@
 import XCTest
-@testable import aoc
+import aoc
 
 final class Day04Tests: XCTestCase {
   let exampleInput = """

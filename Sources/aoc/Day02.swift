@@ -61,7 +61,7 @@ public struct Day02 {
       .reduce(0, +)
   }
 
-  var part1TotalScore: Int {
+  public var part1TotalScore: Int {
     score {
       let opponentShape = HandShape($0.first!)
       let myShape = HandShape($0.last!)
@@ -69,7 +69,7 @@ public struct Day02 {
     }
   }
 
-  var part2TotalScore: Int {
+  public var part2TotalScore: Int {
     score {
       let opponentShape = HandShape($0.first!)
       let desiredResult = CompetitionResult($0.last!)

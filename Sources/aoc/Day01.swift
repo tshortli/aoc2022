@@ -25,7 +25,7 @@ public struct Day01 {
     return calories
   }
 
-  var solution: Int {
+  public var solution: Int {
     caloriesPerElf.sorted().suffix(elfCount).reduce(0, +)
   }
 }

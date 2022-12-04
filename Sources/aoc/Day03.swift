@@ -5,14 +5,14 @@ public struct Day03 {
     self.input = input
   }
 
-  var itemTypeSum: Int {
+  public var itemTypeSum: Int {
     input.lines
       .map { duplicateItem(in: $0.halves) }
       .map { priority($0) }
       .reduce(0, +)
   }
 
-  var badgePrioritySum: Int {
+  public var badgePrioritySum: Int {
     input.lines
       .chunks(of: 3)
       .map { duplicateItem(in: $0) }
