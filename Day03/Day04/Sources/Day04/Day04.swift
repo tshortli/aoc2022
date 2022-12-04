@@ -7,37 +7,51 @@ public struct Day04 {
   
   var part1Solution: Int {
     input.lines
-      .map { ranges(in: $0) }
-      .map { fullyContained($0) ? 1 : 0 }
+      .map { $0.ranges }
+      .map { oneRangeIsContained($0) ? 1 : 0 }
       .reduce(0, +)
   }
 
   var part2Solution: Int {
     input.lines
-      .map { ranges(in: $0) }
+      .map { $0.ranges }
       .map { rangesIntersect($0) ? 1 : 0 }
       .reduce(0, +)
   }
 
-  func ranges(in string: Substring) -> (ClosedRange<Int>, ClosedRange<Int>) {
-    let parts = string.split(separator: ",")
-    let range1 = parts[0].split(separator: "-")
-    let range2 = parts[1].split(separator: "-")
-
-    return (
-      Int(range1[0])!...Int(range1[1])!,
-      Int(range2[0])!...Int(range2[1])!
-    )
-  }
-
-  func fullyContained(_ ranges: (ClosedRange<Int>, ClosedRange<Int>)) -> Bool {
-    return ranges.0.contains(ranges.1.first!) && ranges.0.contains(ranges.1.last!) ||
-           ranges.1.contains(ranges.0.first!) && ranges.1.contains(ranges.0.last!)
+  func oneRangeIsContained(_ ranges: (ClosedRange<Int>, ClosedRange<Int>)) -> Bool {
+    ranges.0.contains(ranges.1) || ranges.1.contains(ranges.0)
   }
 
   func rangesIntersect(_ ranges: (ClosedRange<Int>, ClosedRange<Int>)) -> Bool {
-    return (ranges.0.contains(ranges.1.first!) || ranges.0.contains(ranges.1.last!)) ||
-           (ranges.1.contains(ranges.0.first!) || ranges.1.contains(ranges.0.last!))
+    ranges.0.intersects(ranges.1) || ranges.1.intersects(ranges.0)
+  }
+}
+
+private extension ClosedRange<Int> {
+  func contains(_ other: Self) -> Bool {
+    contains(other.first!) && contains(other.last!)
+  }
+
+  func intersects(_ other: Self) -> Bool {
+    contains(other.first!) || contains(other.last!)
+  }
+}
+
+private extension Substring {
+  func split(on c: Character) -> (Substring, Substring) {
+    let components = split(separator: c)
+    return (components[0], components[1])
+  }
+
+  var range: ClosedRange<Int> {
+    let components = split(on: "-")
+    return Int(components.0)!...Int(components.1)!
+  }
+
+  var ranges: (ClosedRange<Int>, ClosedRange<Int>) {
+    let components = split(on: ",")
+    return (components.0.range, components.1.range)
   }
 }
 
