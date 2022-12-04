@@ -1,3 +1,5 @@
+import Algorithms
+
 public struct Day03 {
   let input: String
 
@@ -6,33 +8,21 @@ public struct Day03 {
   }
 
   public var part1Solution: Int {
-    input.lines
-      .map { duplicateItem(in: $0.halves) }
-      .map { priority($0) }
-      .reduce(0, +)
+    input.lines.reduce(0) { total, line in
+      total + priority(of: line.halves.commonCharacter)
+    }
   }
 
   public var part2Solution: Int {
-    input.lines
-      .chunks(of: 3)
-      .map { duplicateItem(in: $0) }
-      .map { priority($0) }
-      .reduce(0, +)
-  }
-
-  func duplicateItem(in substrings: [Substring]) -> Character {
-    var intersection = Set(substrings.first!)
-    for substring in substrings[1...] {
-      intersection.formIntersection(Set(substring))
+    input.lines.chunks(ofCount: 3).reduce(0) { total, chunk in
+      total + priority(of: chunk.commonCharacter)
     }
-    assert(intersection.count == 1)
-    return intersection.first!
   }
 
   let lowercaseBaseValue = Character("a").asciiValue!
   let uppercaseBaseValue = Character("A").asciiValue!
 
-  func priority(_ c: Character) -> Int {
+  func priority(of c: Character) -> Int {
     let asciiValue = c.asciiValue!
     if asciiValue > lowercaseBaseValue {
       return Int(asciiValue - lowercaseBaseValue) + 1
@@ -44,33 +34,14 @@ public struct Day03 {
   }
 }
 
-private struct ChunksSequence<T: Sequence>: Sequence {
-  var baseSequence: T
-  let chunkSize: Int
-
-  struct Iterator: IteratorProtocol {
-    typealias Element = [T.Element]
-    var baseIterator: T.Iterator
-    let chunkSize: Int
-
-    mutating func next() -> Element? {
-      var chunk: [T.Element] = []
-      for _ in 1...chunkSize {
-        guard let next = baseIterator.next() else { return nil }
-        chunk.append(next)
-      }
-      return chunk
+private extension Collection<Substring> {
+  var commonCharacter: Character {
+    var intersection = Set(first!)
+    for substring in dropFirst(1) {
+      intersection.formIntersection(Set(substring))
     }
-  }
-
-  func makeIterator() -> Iterator {
-    Iterator(baseIterator: baseSequence.makeIterator(), chunkSize: chunkSize)
-  }
-}
-
-private extension Sequence {
-  func chunks(of size: Int) -> ChunksSequence<Self> {
-    ChunksSequence(baseSequence: self, chunkSize: size)
+    assert(intersection.count == 1)
+    return intersection.first!
   }
 }
 
