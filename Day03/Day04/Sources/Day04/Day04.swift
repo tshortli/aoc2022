@@ -12,6 +12,13 @@ public struct Day04 {
       .reduce(0, +)
   }
 
+  var part2Solution: Int {
+    input.lines
+      .map { ranges(in: $0) }
+      .map { rangesIntersect($0) ? 1 : 0 }
+      .reduce(0, +)
+  }
+
   func ranges(in string: Substring) -> (ClosedRange<Int>, ClosedRange<Int>) {
     let parts = string.split(separator: ",")
     let range1 = parts[0].split(separator: "-")
@@ -26,6 +33,11 @@ public struct Day04 {
   func fullyContained(_ ranges: (ClosedRange<Int>, ClosedRange<Int>)) -> Bool {
     return ranges.0.contains(ranges.1.first!) && ranges.0.contains(ranges.1.last!) ||
            ranges.1.contains(ranges.0.first!) && ranges.1.contains(ranges.0.last!)
+  }
+
+  func rangesIntersect(_ ranges: (ClosedRange<Int>, ClosedRange<Int>)) -> Bool {
+    return (ranges.0.contains(ranges.1.first!) || ranges.0.contains(ranges.1.last!)) ||
+           (ranges.1.contains(ranges.0.first!) || ranges.1.contains(ranges.0.last!))
   }
 }
 

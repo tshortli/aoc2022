@@ -18,6 +18,16 @@ final class Day03Tests: XCTestCase {
 
   func testPart1() throws {
     let solver = Day04(input: puzzleInput)
-    XCTAssertEqual(solver.part1Solution, 0)
+    XCTAssertEqual(solver.part1Solution, 487)
+  }
+
+  func testPart2Example() throws {
+    let solver = Day04(input: exampleInput)
+    XCTAssertEqual(solver.part2Solution, 4)
+  }
+
+  func testPart2() throws {
+    let solver = Day04(input: puzzleInput)
+    XCTAssertEqual(solver.part2Solution, 849)
   }
 }
