@@ -23,6 +23,16 @@ final class Day05Tests: XCTestCase {
     let solver = Day05(input: puzzleInput)
     XCTAssertEqual(solver.part1Solution, "BZLVHBWQF")
   }
+
+  func testPart2Example() {
+    let solver = Day05(input: exampleInput)
+    XCTAssertEqual(solver.part2Solution, "MCD")
+  }
+
+  func testPart2() {
+    let solver = Day05(input: puzzleInput)
+    XCTAssertEqual(solver.part2Solution, "TDGJQTZSL")
+  }
 }
 
 fileprivate let puzzleInput = """
