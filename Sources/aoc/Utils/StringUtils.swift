@@ -47,12 +47,23 @@ public struct Parser<T: StringProtocol> {
     _ = advance()
   }
 
+  public mutating func skip(count: Int) {
+    for _ in 1...count {
+      _ = advance()
+    }
+  }
+
   public mutating func skip(while condition: (Character) -> Bool) {
     _ = advance(while: condition)
   }
 
   public mutating func consume(_ c: Character) {
     if advance() != c { fatalError() }
+  }
+
+  public mutating func consume(_ s: String) {
+    assert(string[index...].prefix(s.count) == s)
+    index = string.index(index, offsetBy: s.count)
   }
 
   public mutating func parseInt() -> Int {
