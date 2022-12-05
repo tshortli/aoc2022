@@ -5,7 +5,7 @@ extension String {
 }
 
 extension StringProtocol {
-  func parse<T>(_ handler: (inout Parser<Self>) -> T) -> T {
+  public func parse<T>(_ handler: (inout Parser<Self>) -> T) -> T {
     var parser = Parser(self)
     return handler(&parser)
   }
@@ -22,18 +22,33 @@ public struct Parser<T: StringProtocol> {
     self.index = string.startIndex
   }
 
-  @inline(__always)
-  mutating func advance() -> Character? {
+  public func peek() -> Character? {
+    guard index < endIndex else { return nil }
+    return string[index]
+  }
+
+  public mutating func advance() -> Character? {
     guard index < endIndex else { return nil }
     defer { index = string.index(after: index) }
     return string[index]
   }
 
-  @inline(__always)
-  mutating func advance(while condition: (Character) -> Bool) {
+  public mutating func advance(
+    while condition: (Character) -> Bool
+  ) -> T.SubSequence {
+    let start = index
     while index < endIndex && condition(string[index]) {
       index = string.index(after: index)
     }
+    return string[start..<index]
+  }
+
+  public mutating func skip() {
+    _ = advance()
+  }
+
+  public mutating func skip(while condition: (Character) -> Bool) {
+    _ = advance(while: condition)
   }
 
   public mutating func consume(_ c: Character) {
@@ -41,8 +56,10 @@ public struct Parser<T: StringProtocol> {
   }
 
   public mutating func parseInt() -> Int {
-    let start = index
-    advance { $0.isNumber }
-    return Int(String(string[start..<index]))!
+    return Int(String(advance { $0.isNumber }))!
   }
+}
+
+private extension Int {
+
 }
