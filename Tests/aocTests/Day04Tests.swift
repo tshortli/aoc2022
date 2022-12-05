@@ -11,22 +11,22 @@ final class Day04Tests: XCTestCase {
     2-6,4-8
     """
 
-  func testPart1Example() throws {
+  func testPart1Example() {
     let solver = Day04(input: exampleInput)
     XCTAssertEqual(solver.part1Solution, 2)
   }
 
-  func testPart1() throws {
+  func testPart1() {
     let solver = Day04(input: puzzleInput)
     XCTAssertEqual(solver.part1Solution, 487)
   }
 
-  func testPart2Example() throws {
+  func testPart2Example() {
     let solver = Day04(input: exampleInput)
     XCTAssertEqual(solver.part2Solution, 4)
   }
 
-  func testPart2() throws {
+  func testPart2() {
     let solver = Day04(input: puzzleInput)
     XCTAssertEqual(solver.part2Solution, 849)
   }
