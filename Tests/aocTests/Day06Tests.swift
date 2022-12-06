@@ -2,29 +2,19 @@ import XCTest
 import aoc
 
 final class Day06Tests: XCTestCase {
-  func testPart1Example1() {
-    let solver = Day06(input: "mjqjpqmgbljsphdztnvjfqwrcgsmlb")
-    XCTAssertEqual(solver.part1Solution, 7)
-  }
+  let exampleInputs = [
+    "mjqjpqmgbljsphdztnvjfqwrcgsmlb": (7, 19),
+    "bvwbjplbgvbhsrlpgdmjqwftvncz": (5, 23),
+    "nppdvjthqldpwncqszvftbrmjlhg": (6, 23),
+    "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg": (10, 29),
+    "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw": (11, 26),
+  ]
 
-  func testPart1Example2() {
-    let solver = Day06(input: "bvwbjplbgvbhsrlpgdmjqwftvncz")
-    XCTAssertEqual(solver.part1Solution, 5)
-  }
-
-  func testPart1Example3() {
-    let solver = Day06(input: "nppdvjthqldpwncqszvftbrmjlhg")
-    XCTAssertEqual(solver.part1Solution, 6)
-  }
-
-  func testPart1Example4() {
-    let solver = Day06(input: "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")
-    XCTAssertEqual(solver.part1Solution, 10)
-  }
-
-  func testPart1Example5() {
-    let solver = Day06(input: "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")
-    XCTAssertEqual(solver.part1Solution, 11)
+  func testPart1Example() {
+    for (input, expected) in exampleInputs {
+      let solver = Day06(input: input)
+      XCTAssertEqual(solver.part1Solution, expected.0)
+    }
   }
 
   func testPart1() {
@@ -32,34 +22,18 @@ final class Day06Tests: XCTestCase {
     XCTAssertEqual(solver.part1Solution, 1779)
   }
 
-  func testPart2Example1() {
-    let solver = Day06(input: "mjqjpqmgbljsphdztnvjfqwrcgsmlb")
-    XCTAssertEqual(solver.part2Solution, 19)
-  }
-
-  func testPart2Example2() {
-    let solver = Day06(input: "bvwbjplbgvbhsrlpgdmjqwftvncz")
-    XCTAssertEqual(solver.part2Solution, 23)
-  }
-
-  func testPart2Example3() {
-    let solver = Day06(input: "nppdvjthqldpwncqszvftbrmjlhg")
-    XCTAssertEqual(solver.part2Solution, 23)
-  }
-
-  func testPart2Example4() {
-    let solver = Day06(input: "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")
-    XCTAssertEqual(solver.part2Solution, 29)
-  }
-
-  func testPart2Example5() {
-    let solver = Day06(input: "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")
-    XCTAssertEqual(solver.part2Solution, 26)
+  func testPart2Example() {
+    for (input, expected) in exampleInputs {
+      let solver = Day06(input: input)
+      XCTAssertEqual(solver.part2Solution, expected.1)
+    }
   }
 
   func testPart2() {
     let solver = Day06(input: puzzleInput)
+    let start = Date()
     XCTAssertEqual(solver.part2Solution, 2635)
+    print("\(Int((Date().timeIntervalSince(start)) * 1000000))")
   }
 }
 

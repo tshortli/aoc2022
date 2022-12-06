@@ -6,22 +6,17 @@ public struct Day06 {
   public init(input: String) {
     self.input = input
   }
-  
-  public var part1Solution: Int {
-    for (i, window) in input.windows(ofCount: 4).enumerated() {
-      if Set(window).count == 4 {
-        return i + 4
-      }
-    }
-    return input.count
-  }
 
-  public var part2Solution: Int {
-    for (i, window) in input.windows(ofCount: 14).enumerated() {
-      if Set(window).count == 14 {
-        return i + 14
+  func solve(forWindowSize windowSize: Int) -> Int {
+    for (i, window) in input.windows(ofCount: windowSize).enumerated() {
+      if Set(window).count == windowSize {
+        return i + windowSize
       }
     }
-    return input.count
+    fatalError()
   }
+  
+  public var part1Solution: Int { solve(forWindowSize: 4) }
+
+  public var part2Solution: Int { solve(forWindowSize: 14) }
 }
