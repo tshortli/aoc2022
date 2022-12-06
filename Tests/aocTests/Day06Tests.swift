@@ -31,9 +31,7 @@ final class Day06Tests: XCTestCase {
 
   func testPart2() {
     let solver = Day06(input: puzzleInput)
-    let start = Date()
     XCTAssertEqual(solver.part2Solution, 2635)
-    print("\(Int((Date().timeIntervalSince(start)) * 1000000))")
   }
 }
 
