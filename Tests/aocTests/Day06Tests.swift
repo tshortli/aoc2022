@@ -31,6 +31,36 @@ final class Day06Tests: XCTestCase {
     let solver = Day06(input: puzzleInput)
     XCTAssertEqual(solver.part1Solution, 1779)
   }
+
+  func testPart2Example1() {
+    let solver = Day06(input: "mjqjpqmgbljsphdztnvjfqwrcgsmlb")
+    XCTAssertEqual(solver.part2Solution, 19)
+  }
+
+  func testPart2Example2() {
+    let solver = Day06(input: "bvwbjplbgvbhsrlpgdmjqwftvncz")
+    XCTAssertEqual(solver.part2Solution, 23)
+  }
+
+  func testPart2Example3() {
+    let solver = Day06(input: "nppdvjthqldpwncqszvftbrmjlhg")
+    XCTAssertEqual(solver.part2Solution, 23)
+  }
+
+  func testPart2Example4() {
+    let solver = Day06(input: "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg")
+    XCTAssertEqual(solver.part2Solution, 29)
+  }
+
+  func testPart2Example5() {
+    let solver = Day06(input: "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw")
+    XCTAssertEqual(solver.part2Solution, 26)
+  }
+
+  func testPart2() {
+    let solver = Day06(input: puzzleInput)
+    XCTAssertEqual(solver.part2Solution, 2635)
+  }
 }
 
 fileprivate let puzzleInput = """

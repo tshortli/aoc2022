@@ -15,4 +15,13 @@ public struct Day06 {
     }
     return input.count
   }
+
+  public var part2Solution: Int {
+    for (i, window) in input.windows(ofCount: 14).enumerated() {
+      if Set(window).count == 14 {
+        return i + 14
+      }
+    }
+    return input.count
+  }
 }
