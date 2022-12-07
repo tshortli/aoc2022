@@ -32,7 +32,7 @@ final class Day03Tests: XCTestCase {
   }
 }
 
-fileprivate let puzzleInput = """
+private let puzzleInput = """
   DMwrszrfMzSSCpLpfCCn
   RMvhZhQqlvhMvRtbvbcPclPlncddppLTdppd
   tVMQhFtjjWmsFJsmsW

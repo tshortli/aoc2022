@@ -40,7 +40,7 @@ final class Day01Tests: XCTestCase {
   }
 }
 
-fileprivate let puzzleInput = """
+private let puzzleInput = """
   4920
   3254
   4147

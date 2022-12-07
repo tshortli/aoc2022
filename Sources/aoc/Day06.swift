@@ -1,5 +1,3 @@
-import Algorithms
-
 public struct Day06 {
   let input: String
   

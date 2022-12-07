@@ -35,7 +35,7 @@ final class Day05Tests: XCTestCase {
   }
 }
 
-fileprivate let puzzleInput = """
+private let puzzleInput = """
   [T]             [P]     [J]
   [F]     [S]     [T]     [R]     [B]
   [V]     [M] [H] [S]     [F]     [R]
