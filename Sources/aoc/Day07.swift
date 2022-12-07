@@ -5,61 +5,50 @@ public struct Day07 {
     self.input = input
   }
 
-  var sizesByDirectory: [String: Int] {
-    var cwd: [String] = []
+  var directorySizes: [Int] {
     var sizeStack: [Int] = []
-    var sizesByDirectory: [String: Int] = [:]
+    var directorySizes: [Int] = []
+
+    func pop() {
+      let cwdSize = sizeStack.last!
+      directorySizes.append(cwdSize)
+      sizeStack.removeLast()
+      sizeStack[sizeStack.endIndex - 1] += cwdSize
+    }
 
     for line in input.lines {
-      if line.hasPrefix("$ cd ") {
-        let directoryName = line.suffix(line.count - 5)
-        if directoryName == ".." {
-          let cwdSize = sizeStack.last!
-          sizesByDirectory[cwd.joined(separator: "/")] = cwdSize
-          cwd.removeLast()
-          sizeStack.removeLast()
-          sizeStack[sizeStack.count - 1] += cwdSize
-        } else {
-          cwd.append(String(directoryName == "/" ? "" : directoryName))
-          sizeStack.append(0)
-        }
-      } else if line.hasPrefix("$ ls") {
-        // Nothing?
-      } else if line.hasPrefix("dir ") {
-        // Nothing?
-      } else {
+      if line == "$ cd .." {
+        pop()
+      } else if line.hasPrefix("$ cd ") {
+        sizeStack.append(0)
+      } else if !line.hasPrefix("$ ls") && !line.hasPrefix("dir ") {
         let components = line.split(separator: " ")
         sizeStack[sizeStack.count - 1] += Int(String(components[0]))!
       }
     }
 
-    // Finish unwinding the stacks
-    while cwd.count > 1 {
-      let cwdSize = sizeStack.last!
-      sizesByDirectory[cwd.joined(separator: "/")] = cwdSize
-      cwd.removeLast()
-      sizeStack.removeLast()
-      sizeStack[sizeStack.count - 1] += cwdSize
+    // Finish unwinding the stack
+    while sizeStack.count > 1 {
+      pop()
     }
 
-    sizesByDirectory["/"] = sizeStack.first!
-    return sizesByDirectory
+    // Add the root directory size
+    directorySizes.append(sizeStack.first!)
+    return directorySizes
   }
 
   public var part1Solution: Int {
-    return sizesByDirectory
-      .map(\.value)
-      .filter { $0 <= 100000 }
-      .reduce(0, +)
+    return directorySizes.reduce(0) { totalSize, directorySize in
+      (directorySize <= 100000) ? totalSize + directorySize : totalSize
+    }
   }
 
   public var part2Solution: Int {
-    let sizes = sizesByDirectory
-    let minSizeNeeded = sizes["/"]! - 40000000
+    let sizes = directorySizes
+    let minSizeNeeded = sizes.last! - 40000000 // "/" is the last element
 
-    return sizes
-      .map(\.value)
-      .filter { $0 >= minSizeNeeded }
-      .min()!
+    return sizes.reduce(Int.max) { minSize, directorySize in
+      (directorySize >= minSizeNeeded) ? min(directorySize, minSize) : minSize
+    }
   }
 }
