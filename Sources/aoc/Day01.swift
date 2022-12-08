@@ -1,4 +1,4 @@
-public struct Day01 {
+public struct Day01: Solver {
   let input: String
 
   public init(input: String) {
