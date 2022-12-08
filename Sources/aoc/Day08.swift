@@ -10,38 +10,23 @@ public struct Day08: Solver {
 
     var visibleIndices: Set<Int> = []
     for i in 0..<grid.size {
-      var max: UInt8 = 0
-      grid.enumerateRow(i) { index, ascii in
-        if ascii > max {
-          visibleIndices.insert(index)
-          max = ascii
+      let sequences = [
+        grid.rowLeftSequence(i),
+        grid.rowRightSequence(i),
+        grid.columnUpSequence(i),
+        grid.columnDownSequence(i),
+      ]
+
+      for sequence in sequences {
+        var max: UInt8 = 0
+        grid.enumerate(indices: sequence) { index, ascii in
+          if ascii > max {
+            visibleIndices.insert(index)
+            max = ascii
+          }
+          return true
         }
       }
-
-      max = 0
-      grid.enumerateRow(i, forward: false) { index, ascii in
-        if ascii > max {
-          visibleIndices.insert(index)
-          max = ascii
-        }
-      }
-
-      max = 0
-      grid.enumerateColumn(i) { index, ascii in
-        if ascii > max {
-          visibleIndices.insert(index)
-          max = ascii
-        }
-      }
-
-      max = 0
-      grid.enumerateColumn(i, forward: false) { index, ascii in
-        if ascii > max {
-          visibleIndices.insert(index)
-          max = ascii
-        }
-      }
-
     }
     return visibleIndices.count
   }
@@ -78,44 +63,26 @@ struct Grid {
   }
 
   var size: Int { rows }
-
-  private func index(_ row: Int, _ col: Int) -> Int {
-    cols * row + col
-  }
+  private func index(_ row: Int, _ col: Int) -> Int { cols * row + col }
 
   subscript(_ row: Int, _ col: Int) -> UInt8 {
     return ascii[index(row, col)]
   }
 
-  func enumerateRow(
-    _ row: Int,
-    forward: Bool = true,
-    block: (Int, UInt8) -> ()
-  ) {
-    let lowIndex = cols * row
-    let highIndex = lowIndex + cols - 2
-    let seq = forward
-    ? stride(from: lowIndex, through: highIndex, by: 1)
-    : stride(from: highIndex, through: lowIndex, by: -1)
-
-    for i in seq {
-      block(i, ascii[i])
-    }
+  func rowLeftSequence(_ row: Int) -> StrideThrough<Int> {
+    stride(from: cols * row, through: cols * row + cols - 2, by: 1)
   }
 
-  func enumerateColumn(
-    _ col: Int,
-    forward: Bool = true,
-    block: (Int, UInt8) -> ()
-  ) {
-    let lowIndex = col
-    let highIndex = lowIndex + (rows - 1) * cols
-    let seq = forward
-    ? stride(from: lowIndex, through: highIndex, by: cols)
-    : stride(from: highIndex, through: lowIndex, by: -cols)
-    for i in seq {
-      block(i, ascii[i])
-    }
+  func rowRightSequence(_ row: Int) -> StrideThrough<Int> {
+    stride(from: cols * row + cols - 2, through: cols * row, by: -1)
+  }
+
+  func columnUpSequence(_ col: Int) -> StrideThrough<Int> {
+    stride(from: col + (rows - 1) * cols, through: col, by: -cols)
+  }
+
+  func columnDownSequence(_ col: Int) -> StrideThrough<Int> {
+    stride(from: col, through: col + (rows - 1) * cols, by: cols)
   }
 
   func upSequence(row: Int, col: Int) -> StrideThrough<Int> {
