@@ -19,6 +19,16 @@ final class Day08Tests: XCTestCase {
     let solver = Day08.createForPuzzleInput()
     XCTAssertEqual(solver.part1Solution, 1700)
   }
+
+  func testPart2Example() {
+    let solver = Day08(input: exampleInput)
+    XCTAssertEqual(solver.part2Solution, 8)
+  }
+
+  func testPart2() {
+    let solver = Day08.createForPuzzleInput()
+    XCTAssertEqual(solver.part2Solution, 470596)
+  }
 }
 
 extension Day08: SolverDefaultInit {
