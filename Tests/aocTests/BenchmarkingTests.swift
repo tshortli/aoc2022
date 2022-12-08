@@ -4,6 +4,10 @@ import aoc
 final class BenchmarkingTests: XCTestCase {
   let iterationCount = 10
 
+  override func setUp() async throws {
+    try XCTSkipIf(ProcessInfo().environment["BENCHMARK"] != "1")
+  }
+
   func testPerformance() {
     var outputRows: [(String, Int, Int)] = []
     for solver in defaultSolvers {
@@ -37,6 +41,12 @@ extension BenchmarkingTests {
   var defaultSolvers: [any Solver] {
     [
       Day01.createForPuzzleInput(),
+      Day02.createForPuzzleInput(),
+      Day03.createForPuzzleInput(),
+      Day04.createForPuzzleInput(),
+      Day05.createForPuzzleInput(),
+      Day06.createForPuzzleInput(),
+      Day07.createForPuzzleInput(),
     ]
   }
 }

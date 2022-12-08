@@ -1,6 +1,6 @@
 import Algorithms
 
-public struct Day03 {
+public struct Day03: Solver {
   let input: String
 
   public init(input: String) {
