@@ -16,7 +16,6 @@ public struct Day09: Solver {
       parser.consume(" ")
       let count = parser.parseInt()
 
-      print("=== \(direction) \(count)")
       for _ in 1...count {
         head.move(direction)
         tail.follow(head)
@@ -24,34 +23,29 @@ public struct Day09: Solver {
       }
     }
 
-//    print("--------------")
-//    print(head)
-//    print(tail)
-//
-//    print("""
-//      ..##..
-//      ...##.
-//      .####.
-//      ....#.
-//      s###..
-//      """)
-//    print("")
-//    for y in stride(from: 5, through: 0, by: -1) {
-//      for x in 0...5 {
-//        if uniqueTailPositions.contains(Position(x, y)) {
-//          print("#", terminator: "")
-//        } else {
-//          print(".", terminator: "")
-//        }
-//      }
-//      print("")
-//    }
-
     return uniqueTailPositions.count
   }
 
   public var part2Solution: Int {
-    0
+    var knots: [Position] = Array(repeating: Position(0, 0), count: 10)
+
+    var uniqueTailPositions: Set<Position> = []
+    for line in input.lines {
+      var parser = Parser(line)
+      let direction = parser.advance()!
+      parser.consume(" ")
+      let count = parser.parseInt()
+
+      for _ in 1...count {
+        knots[0].move(direction)
+        for i in 1..<knots.count {
+          knots[i].follow(knots[i - 1])
+        }
+        uniqueTailPositions.insert(knots.last!)
+      }
+    }
+
+    return uniqueTailPositions.count
   }
 }
 
