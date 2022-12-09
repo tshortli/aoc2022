@@ -36,8 +36,7 @@ public struct Day09: Solver {
   }
 
   struct Position: Hashable, Equatable {
-    var x: Int
-    var y: Int
+    var x: Int, y: Int
 
     init(_ x: Int, _ y: Int) {
       self.x = x
@@ -55,15 +54,10 @@ public struct Day09: Solver {
     }
 
     mutating func follow(_ other: Self) {
-      let dx = other.x - x, dy = other.y - y
-
-      if dy == 0 && abs(dx) > 1 {
-        x += (dx > 0) ? 1 : -1
-      } else if dx == 0 && abs(dy) > 1 {
-        y += (dy > 0) ? 1 : -1
-      } else if dx != 0 && dy != 0 && (abs(dx) > 1 || abs(dy) > 1) {
-        x += (dx > 0) ? 1 : -1
-        y += (dy > 0) ? 1 : -1
+      let dx = (other.x - x), dy = (other.y - y)
+      if abs(dx) == 2 || abs(dy) == 2 {
+        x += dx.signum()
+        y += dy.signum()
       }
     }
   }
