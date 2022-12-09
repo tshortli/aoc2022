@@ -4,21 +4,23 @@ import aoc
 final class Day09Tests: XCTestCase {
   func testPart1Example() {
     let solver = Day09(input: """
-    R 4
-    U 4
-    L 3
-    D 1
-    R 4
-    D 1
-    L 5
-    R 2
-    """)
+      R 4
+      U 4
+      L 3
+      D 1
+      R 4
+      D 1
+      L 5
+      R 2
+      """)
     XCTAssertEqual(solver.part1Solution, 13)
   }
 
   func testPart1() {
     let solver = Day09.createForPuzzleInput()
-    XCTAssertEqual(solver.part1Solution, 6266)
+    measure {
+      XCTAssertEqual(solver.part1Solution, 6266)
+    }
   }
 
   func testPart2Example() {
@@ -37,7 +39,9 @@ final class Day09Tests: XCTestCase {
 
   func testPart2() {
     let solver = Day09.createForPuzzleInput()
-    XCTAssertEqual(solver.part2Solution, 2369)
+    measure {
+      XCTAssertEqual(solver.part2Solution, 2369)
+    }
   }
 }
 

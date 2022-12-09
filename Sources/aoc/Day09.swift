@@ -5,38 +5,17 @@ public struct Day09: Solver {
     self.input = input
   }
 
-  public var part1Solution: Int {
-    var head: Position = Position(0, 0)
-    var tail: Position = Position(0, 0)
+  func simulate(forKnotCount count: Int) -> Int {
+    precondition(count > 1)
+    var knots: [Position] = Array(repeating: Position(0, 0), count: count)
 
     var uniqueTailPositions: Set<Position> = []
     for line in input.lines {
       var parser = Parser(line)
       let direction = parser.advance()!
       parser.consume(" ")
-      let count = parser.parseInt()
 
-      for _ in 1...count {
-        head.move(direction)
-        tail.follow(head)
-        uniqueTailPositions.insert(tail)
-      }
-    }
-
-    return uniqueTailPositions.count
-  }
-
-  public var part2Solution: Int {
-    var knots: [Position] = Array(repeating: Position(0, 0), count: 10)
-
-    var uniqueTailPositions: Set<Position> = []
-    for line in input.lines {
-      var parser = Parser(line)
-      let direction = parser.advance()!
-      parser.consume(" ")
-      let count = parser.parseInt()
-
-      for _ in 1...count {
+      for _ in 1...parser.parseInt() {
         knots[0].move(direction)
         for i in 1..<knots.count {
           knots[i].follow(knots[i - 1])
@@ -47,50 +26,45 @@ public struct Day09: Solver {
 
     return uniqueTailPositions.count
   }
-}
 
-struct Position: Hashable, Equatable {
-  var x: Int
-  var y: Int
-
-  init(_ x: Int, _ y: Int) {
-    self.x = x
-    self.y = y
+  public var part1Solution: Int {
+    simulate(forKnotCount: 2)
   }
 
-  mutating func move(_ direction: Character) {
-    switch direction {
-    case "U": y += 1; break
-    case "D": y -= 1; break
-    case "L": x -= 1; break
-    case "R": x += 1; break
-    default: fatalError()
+  public var part2Solution: Int {
+    simulate(forKnotCount: 10)
+  }
+
+  struct Position: Hashable, Equatable {
+    var x: Int
+    var y: Int
+
+    init(_ x: Int, _ y: Int) {
+      self.x = x
+      self.y = y
     }
-  }
 
-  mutating func follow(_ other: Self) {
-    let dx = other.x - x, dy = other.y - y
-
-    if dy == 0 {
-      if dx > 1 {
-        x += 1
-      } else if dx < -1 {
-        x -= 1
+    mutating func move(_ direction: Character) {
+      switch direction {
+      case "U": y += 1; break
+      case "D": y -= 1; break
+      case "L": x -= 1; break
+      case "R": x += 1; break
+      default: fatalError()
       }
     }
 
-    if dx == 0 {
-      if dy > 1 {
-        y += 1
-      } else if dy < -1 {
-        y -= 1
-      }
-    }
+    mutating func follow(_ other: Self) {
+      let dx = other.x - x, dy = other.y - y
 
-    if dx != 0 && dy != 0 && (abs(dx) > 1 || abs(dy) > 1) {
-      x += (dx > 0) ? 1 : -1
-      y += (dy > 0) ? 1 : -1
+      if dy == 0 && abs(dx) > 1 {
+        x += (dx > 0) ? 1 : -1
+      } else if dx == 0 && abs(dy) > 1 {
+        y += (dy > 0) ? 1 : -1
+      } else if dx != 0 && dy != 0 && (abs(dx) > 1 || abs(dy) > 1) {
+        x += (dx > 0) ? 1 : -1
+        y += (dy > 0) ? 1 : -1
+      }
     }
   }
 }
-
