@@ -9,10 +9,33 @@ final class Day10Tests: XCTestCase {
 
   func testPart1() {
     let solver = Day10.createForPuzzleInput()
-    measure {
-      XCTAssertEqual(solver.part1Solution, 10760)
-    }
+    XCTAssertEqual(solver.part1Solution, 10760)
   }
+
+  func testPart2Example() {
+    let solver = Day10(input: exampleInput)
+    XCTAssertEqual(solver.part2Solution, """
+      ##..##..##..##..##..##..##..##..##..##..
+      ###...###...###...###...###...###...###.
+      ####....####....####....####....####....
+      #####.....#####.....#####.....#####.....
+      ######......######......######......####
+      #######.......#######.......#######.....
+      """)
+  }
+
+  func testPart2() {
+    let solver = Day10.createForPuzzleInput()
+    XCTAssertEqual(solver.part2Solution, """
+      ####.###...##..###..#..#.####..##..#..#.
+      #....#..#.#..#.#..#.#..#.#....#..#.#..#.
+      ###..#..#.#....#..#.####.###..#....####.
+      #....###..#.##.###..#..#.#....#.##.#..#.
+      #....#....#..#.#....#..#.#....#..#.#..#.
+      #....#.....###.#....#..#.#.....###.#..#.
+      """)
+  }
+
 }
 
 extension Day10Tests {
