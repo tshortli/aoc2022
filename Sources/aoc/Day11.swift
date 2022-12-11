@@ -5,19 +5,22 @@ public struct Day11: Solver {
     self.input = input
   }
 
-  func monkeyBusiness(afterRounds rounds: Int, relief: Int) -> Int {
+  func monkeyBusiness(afterRounds rounds: Int, mode: WorryMode) -> Int {
     var monkeys = parseMonkeys()
 
     let divisorProduct = monkeys.map(\.testDivisor).reduce(1, *)
 
-    for round in 1...rounds {
+    for _ in 1...rounds {
       for i in monkeys.indices {
         let monkey = monkeys[i]
         let items = monkey.items
         monkeys[i].totalInspections += items.count
         monkeys[i].items = []
         for item in monkey.items {
-          let worryLevel = monkey.worryLevel(for: item) % divisorProduct
+          let worryLevel = mode.apply(
+            to: monkey.worryLevel(for: item),
+            divisorProduct: divisorProduct
+          )
           let nextMonkeyIndex = monkey.nextMonkey(forWorryLevel: worryLevel)
           monkeys[nextMonkeyIndex].receive(worryLevel)
         }
@@ -32,11 +35,11 @@ public struct Day11: Solver {
   }
 
   public var part1Solution: Int {
-    monkeyBusiness(afterRounds: 20, relief: 3)
+    monkeyBusiness(afterRounds: 20, mode: .relief)
   }
 
   public var part2Solution: Int {
-    monkeyBusiness(afterRounds: 10000, relief: 1)
+    monkeyBusiness(afterRounds: 10000, mode: .manage)
   }
 
   func parseMonkeys() -> [Monkey] {
@@ -74,15 +77,11 @@ public struct Day11: Solver {
       let operationString = lines[lines.startIndex + 2].dropFirst(23)
       self.operation = operationString.first!
 
-      let operandString = operationString.dropFirst(2)
-      if operandString == "old" {
-        self.operand = .oldValue
-      } else {
-        self.operand = .value(Int(operandString)!)
-      }
-      self.testDivisor = Int(lines[lines.startIndex + 3].dropFirst(21))!
-      self.trueMonkey =  Int(lines[lines.startIndex + 4].dropFirst(29))!
-      self.falseMonkey = Int(lines[lines.startIndex + 5].dropFirst(30))!
+      let operand = operationString.dropFirst(2)
+      self.operand = (operand == "old") ? .oldValue : .value(Int(operand)!)
+      self.testDivisor = lines[lines.startIndex + 3].parseInt(at: 21)
+      self.trueMonkey =  lines[lines.startIndex + 4].parseInt(at: 29)
+      self.falseMonkey = lines[lines.startIndex + 5].parseInt(at: 30)
     }
 
     func worryLevel(for item: Int) -> Int {
@@ -109,10 +108,26 @@ public struct Day11: Solver {
       items.append(item)
     }
   }
+
+  enum WorryMode {
+    case relief
+    case manage
+
+    func apply(to worryLevel: Int, divisorProduct: Int) -> Int {
+      switch self {
+      case .relief: return worryLevel / 3
+      case .manage: return worryLevel % divisorProduct
+      }
+    }
+  }
 }
 
 private extension StringProtocol {
   var trimmingWhitespace: SubSequence {
     trimming { $0.isWhitespace }
+  }
+
+  func parseInt(at index: Int) -> Int {
+    Int(dropFirst(index))!
   }
 }
