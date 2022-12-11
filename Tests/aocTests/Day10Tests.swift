@@ -35,7 +35,6 @@ final class Day10Tests: XCTestCase {
       #....#.....###.#....#..#.#.....###.#..#.
       """)
   }
-
 }
 
 extension Day10Tests {
