@@ -5,17 +5,19 @@ public struct Day11: Solver {
     self.input = input
   }
 
-  public var part1Solution: Int {
+  func monkeyBusiness(afterRounds rounds: Int, relief: Int) -> Int {
     var monkeys = parseMonkeys()
 
-    for round in 1...20 {
+    let divisorProduct = monkeys.map(\.testDivisor).reduce(1, *)
+
+    for round in 1...rounds {
       for i in monkeys.indices {
         let monkey = monkeys[i]
         let items = monkey.items
         monkeys[i].totalInspections += items.count
         monkeys[i].items = []
         for item in monkey.items {
-          let worryLevel = monkey.worryLevel(for: item) / 3
+          let worryLevel = monkey.worryLevel(for: item) % divisorProduct
           let nextMonkeyIndex = monkey.nextMonkey(forWorryLevel: worryLevel)
           monkeys[nextMonkeyIndex].receive(worryLevel)
         }
@@ -29,8 +31,12 @@ public struct Day11: Solver {
     return sortedInspections[0] * sortedInspections[1]
   }
 
+  public var part1Solution: Int {
+    monkeyBusiness(afterRounds: 20, relief: 3)
+  }
+
   public var part2Solution: Int {
-    0
+    monkeyBusiness(afterRounds: 10000, relief: 1)
   }
 
   func parseMonkeys() -> [Monkey] {

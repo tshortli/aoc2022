@@ -11,6 +11,16 @@ final class Day11Tests: XCTestCase {
     let solver = Day11.createForPuzzleInput()
     XCTAssertEqual(solver.part1Solution, 69918)
   }
+
+  func testPart2Example() {
+    let solver = Day11(input: exampleInput)
+    XCTAssertEqual(solver.part2Solution, 2713310158)
+  }
+
+  func testPart2() {
+    let solver = Day11.createForPuzzleInput()
+    XCTAssertEqual(solver.part2Solution, 19573408701)
+  }
 }
 
 extension Day11Tests {
