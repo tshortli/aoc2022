@@ -4,12 +4,12 @@ import aoc
 final class Day11Tests: XCTestCase {
   func testPart1Example() {
     let solver = Day11(input: exampleInput)
-    XCTAssertEqual(solver.part1Solution, 0)
+    XCTAssertEqual(solver.part1Solution, 10605)
   }
 
   func testPart1() {
     let solver = Day11.createForPuzzleInput()
-    XCTAssertEqual(solver.part1Solution, 0)
+    XCTAssertEqual(solver.part1Solution, 69918)
   }
 }
 
