@@ -45,6 +45,7 @@ public struct Day08: Solver {
   }
 }
 
+// FIXME: move into Day struct
 struct Grid {
   let ascii: [UInt8]
   private let rows: Int
