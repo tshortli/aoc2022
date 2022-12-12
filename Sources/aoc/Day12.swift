@@ -6,11 +6,13 @@ public struct Day12: Solver {
   }
 
   public var part1Solution: Int {
-    Grid(source: input).shortestPath()
+    let grid = Grid(source: input)
+    return grid.shortestPath(from: [grid.start])
   }
 
   public var part2Solution: Int {
-    0
+    let grid = Grid(source: input)
+    return grid.shortestPath(from: grid.lowestPositions())
   }
 
   struct Position: CustomStringConvertible, Equatable, Hashable {
@@ -60,6 +62,15 @@ public struct Day12: Solver {
       self.end = Position(endRow, endIndex - endRow * self.size.col)
     }
 
+    func lowestPositions() -> [Position] {
+      var positions: [Position] = []
+      for (i, c) in ascii.enumerated() where c == UInt8(ascii: "a") {
+        let row = i / size.col
+        positions.append(Position(row, i - row * size.col))
+      }
+      return positions
+    }
+
     private func index(at position: Position) -> Int? {
       if position.row < 0 || position.row > size.row - 1 ||
           position.col < 0 || position.col > size.col - 2 {
@@ -88,19 +99,19 @@ public struct Day12: Solver {
       }
     }
 
-    func shortestPath() -> Int {
+    func shortestPath(from positions: [Position]) -> Int {
       var visited: [Bool] = Array(repeating: false, count: ascii.count)
       var distances: [Int] = Array(repeating: Int.max, count: ascii.count)
 
-      var stack = [start]
-      distances[index(at: start)!] = 0
+      var stack = positions
+      for position in positions {
+        distances[index(at: position)!] = 0
+      }
 
-      while let position = stack.min(by: { distances[index(at: $0)!] < distances[index(at: $1)!]}) {
+      while !stack.isEmpty {
+        let position = stack.min { distances[index(at: $0)!] < distances[index(at: $1)!] }!
         stack.removeAll(where: { $0 == position })
         let currentIndex = index(at: position)!
-        if visited[currentIndex] {
-          continue
-        }
 
         let distance = distances[currentIndex]
         for adjacentPosition in eligiblePositionsAdjacent(to: position) {
