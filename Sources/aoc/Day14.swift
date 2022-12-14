@@ -7,31 +7,23 @@ public struct Day14: Solver {
 
   public var part1Solution: Int {
     var simulation = Simulation(input)
-    var point: Point
-    repeat {
-      point = simulation.addSand()
-    } while point.y != simulation.floorY - 1
-
-    return simulation.sand.count - 1 // Remove the sand that hit the floor
+    let oneAboveFloor = simulation.floorY - 1
+    simulation.addSand { $0.y != oneAboveFloor }
+    return simulation.sandCount - 1 // Remove the sand that hit the floor
   }
 
   public var part2Solution: Int {
     var simulation = Simulation(input)
     let sourcePoint = Point(x: 500, y: 0)
-    var point: Point
-    repeat {
-      point = simulation.addSand()
-    } while point != sourcePoint
-
-    return simulation.sand.count
+    simulation.addSand { $0 != sourcePoint }
+    return simulation.sandCount
   }
 
   struct Point: Equatable, Hashable, CustomStringConvertible {
     var x: Int, y: Int
 
-    func down() -> Point { Point(x: x, y: y + 1) }
-    func downLeft() -> Point { Point(x: x - 1, y: y + 1) }
-    func downRight() -> Point { Point(x: x + 1, y: y + 1) }
+    mutating func translate(y dy: Int) { y += dy }
+    mutating func translate(x dx: Int) { x += dx }
 
     mutating func moveTowards(_ other: Point) {
       let dx = other.x - x, dy = other.y - y
@@ -43,9 +35,9 @@ public struct Day14: Solver {
   }
 
   struct Simulation {
-    let rocks: Set<Point>
     let floorY: Int
-    var sand: Set<Point> = []
+    var obstacles: Set<Point> = []
+    var sandCount = 0
 
     init(_ input: String) {
       var rocks: Set<Point> = []
@@ -54,8 +46,7 @@ public struct Day14: Solver {
         var prevPoint: Point?
         var parser = Parser(line)
         while parser.peek() != nil {
-          let (x, _, y) = (parser.parseInt(), parser.consume(","), parser.parseInt())
-          let point = Point(x: x, y: y)
+          let point = parser.parsePoint()
           rocks.insert(point)
 
           if let prevPoint {
@@ -73,31 +64,44 @@ public struct Day14: Solver {
           }
         }
       }
-      self.rocks = rocks
+      self.obstacles = rocks
       self.floorY = maxY + 2
     }
 
     mutating func addSand() -> Point {
       var point = Point(x: 500, y: 0)
-      while let nextPoint = dropPoint(for: point) {
+      while let nextPoint = dropSand(at: point) {
         point = nextPoint
       }
-      sand.insert(point)
+      obstacles.insert(point)
+      sandCount += 1
       return point
     }
 
-    func dropPoint(for point: Point) -> Point? {
-      let downPoint = point.down()
-      if isAir(at: downPoint) { return downPoint }
-      let downLeftPoint = point.downLeft()
-      if isAir(at: downLeftPoint) { return downLeftPoint }
-      let downRightPoint = point.downRight()
-      if isAir(at: downRightPoint) { return downRightPoint }
+    mutating func addSand(while condition: (Point) -> Bool) {
+      while condition(addSand()) {}
+    }
+
+    func dropSand(at point: Point) -> Point? {
+      var droppedPoint = point
+      droppedPoint.translate(y: 1)
+      if isAir(at: droppedPoint) { return droppedPoint }
+      droppedPoint.translate(x: -1)
+      if isAir(at: droppedPoint) { return droppedPoint }
+      droppedPoint.translate(x: 2)
+      if isAir(at: droppedPoint) { return droppedPoint }
       return nil
     }
 
     func isAir(at point: Point) -> Bool {
-      !rocks.contains(point) && !sand.contains(point) && point.y < floorY
+      return point.y < floorY && !obstacles.contains(point)
     }
+  }
+}
+
+private extension Parser {
+  mutating func parsePoint() -> Day14.Point {
+    let (x, _, y) = (parseInt(), consume(","), parseInt())
+    return Day14.Point(x: x, y: y)
   }
 }
