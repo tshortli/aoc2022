@@ -6,11 +6,24 @@ public struct Day14: Solver {
   }
 
   public var part1Solution: Int {
-    simulateSand()
+    var simulation = Simulation(input)
+    var point: Point
+    repeat {
+      point = simulation.addSand()
+    } while point.y != simulation.floorY - 1
+
+    return simulation.sand.count - 1 // Remove the sand that hit the floor
   }
 
   public var part2Solution: Int {
-    0
+    var simulation = Simulation(input)
+    let sourcePoint = Point(x: 500, y: 0)
+    var point: Point
+    repeat {
+      point = simulation.addSand()
+    } while point != sourcePoint
+
+    return simulation.sand.count
   }
 
   struct Point: Equatable, Hashable, CustomStringConvertible {
@@ -29,16 +42,9 @@ public struct Day14: Solver {
     var description: String { "(\(x), \(y))" }
   }
 
-  func simulateSand() -> Int {
-    var simulation = Simulation(input)
-    while simulation.addSand() {
-    }
-    return simulation.sand.count
-  }
-
   struct Simulation {
     let rocks: Set<Point>
-    let maxY: Int
+    let floorY: Int
     var sand: Set<Point> = []
 
     init(_ input: String) {
@@ -68,21 +74,16 @@ public struct Day14: Solver {
         }
       }
       self.rocks = rocks
-      self.maxY = maxY
+      self.floorY = maxY + 2
     }
 
-    mutating func addSand() -> Bool {
+    mutating func addSand() -> Point {
       var point = Point(x: 500, y: 0)
-      repeat {
-        if let nextPoint = dropPoint(for: point) {
-          point = nextPoint
-        } else {
-          sand.insert(point)
-          return true
-        }
-      } while point.y <= maxY
-
-      return false
+      while let nextPoint = dropPoint(for: point) {
+        point = nextPoint
+      }
+      sand.insert(point)
+      return point
     }
 
     func dropPoint(for point: Point) -> Point? {
@@ -96,24 +97,7 @@ public struct Day14: Solver {
     }
 
     func isAir(at point: Point) -> Bool {
-      !rocks.contains(point) && !sand.contains(point)
-    }
-
-    func render(xRange: ClosedRange<Int>, yRange: ClosedRange<Int>) {
-      for y in yRange {
-        for x in xRange {
-          let point = Point(x: x, y: y)
-          print(string(for: point), terminator: "")
-        }
-        print("")
-      }
-      print("")
-    }
-
-    func string(for point: Point) -> String {
-      if rocks.contains(point) { return "#" }
-      if sand.contains(point) { return "o" }
-      return "."
+      !rocks.contains(point) && !sand.contains(point) && point.y < floorY
     }
   }
 }
