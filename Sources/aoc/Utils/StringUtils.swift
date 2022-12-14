@@ -22,13 +22,15 @@ public struct Parser<T: StringProtocol> {
     self.index = string.startIndex
   }
 
+  var hasMore: Bool { index < endIndex }
+
   public func peek() -> Character? {
-    guard index < endIndex else { return nil }
+    guard hasMore else { return nil }
     return string[index]
   }
 
   public mutating func advance() -> Character? {
-    guard index < endIndex else { return nil }
+    guard hasMore else { return nil }
     defer { index = string.index(after: index) }
     return string[index]
   }
