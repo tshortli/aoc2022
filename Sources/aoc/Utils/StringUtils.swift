@@ -69,7 +69,7 @@ public struct Parser<T: StringProtocol> {
   }
 
   public mutating func parseInt() -> Int {
-    return Int(String(advance { $0.isNumber }))!
+    return Int(String(advance { $0.isNumber || $0 == "-"}))!
   }
 }
 
