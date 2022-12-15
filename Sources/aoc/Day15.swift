@@ -10,7 +10,7 @@ public struct Day15: Solver {
   }
 
   public var part2Solution: Int {
-    0
+    distressBeaconTuningFrequency(bound: 4000000)
   }
 
   public func countNoBeacon(row y: Int) -> Int {
@@ -43,6 +43,29 @@ public struct Day15: Solver {
     return count
   }
 
+  public func distressBeaconTuningFrequency(bound: Int) -> Int {
+    let sensorRecords = input.lines.map { $0.parseSensorRecord() }
+    var potentialPoints = sensorRecords[0].boundaryPoints
+    for record in sensorRecords.dropFirst() {
+      potentialPoints.formUnion(record.boundaryPoints)
+    }
+
+    let matches = potentialPoints.filter {
+      guard $0.x >= 0 && $0.x <= bound && $0.y >= 0 && $0.y <= bound else {
+        return false
+      }
+      for record in sensorRecords {
+        if $0.manhattanDistance(to: record.sensorPoint) <= record.distance {
+          return false
+        }
+      }
+      return true
+    }
+    assert(matches.count == 1)
+
+    return matches.first!.x * 4000000 + matches.first!.y
+  }
+
   struct Point: Equatable, Hashable, CustomStringConvertible {
     var x: Int, y: Int
 
@@ -50,8 +73,33 @@ public struct Day15: Solver {
       abs(x - other.x) + abs(y - other.y)
     }
 
-    mutating func translate(y dy: Int) { y += dy }
-    mutating func translate(x dx: Int) { x += dx }
+    func pointsAtDistance(_ distance: Int) -> Set<Point> {
+      var points: Set<Point> = []
+      var point = Point(x: x, y: y + distance)
+      for _ in 1...distance {
+        points.insert(point)
+        point.translate(1, -1)
+      }
+      for _ in 1...distance {
+        points.insert(point)
+        point.translate(-1, -1)
+      }
+      for _ in 1...distance {
+        points.insert(point)
+        point.translate(-1, 1)
+      }
+      for _ in 1...distance {
+        points.insert(point)
+        point.translate(1, 1)
+      }
+
+      return points
+    }
+
+    mutating func translate(_ dx: Int, _ dy: Int) {
+      x += dx
+      y += dy
+    }
 
     var description: String { "(\(x), \(y))" }
   }
@@ -65,6 +113,10 @@ public struct Day15: Solver {
       self.sensorPoint = sensorPoint
       self.beaconPoint = beaconPoint
       self.distance = sensorPoint.manhattanDistance(to: beaconPoint)
+    }
+
+    var boundaryPoints: Set<Point> {
+      sensorPoint.pointsAtDistance(distance + 1)
     }
   }
 }

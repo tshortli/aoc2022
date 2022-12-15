@@ -11,6 +11,16 @@ final class Day15Tests: XCTestCase {
     let solver = Day15.createForPuzzleInput()
     XCTAssertEqual(solver.part1Solution, 4665948)
   }
+
+  func testPart2Example() {
+    let solver = Day15(input: exampleInput)
+    XCTAssertEqual(solver.distressBeaconTuningFrequency(bound: 20), 56000011)
+  }
+
+  func testPart2() {
+    let solver = Day15.createForPuzzleInput()
+    XCTAssertEqual(solver.part2Solution, 13543690671045)
+  }
 }
 
 extension Day15Tests {
