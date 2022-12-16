@@ -54,6 +54,8 @@ extension BenchmarkingTests {
       Day12.createForPuzzleInput(),
       Day13.createForPuzzleInput(),
       Day14.createForPuzzleInput(),
+      Day15.createForPuzzleInput(),
+      Day16.createForPuzzleInput(),
     ]
   }
 }
