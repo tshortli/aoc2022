@@ -35,6 +35,12 @@ public struct Parser<T: StringProtocol> {
     return string[index]
   }
 
+  public mutating func advance(_ count: Int) -> T.SubSequence {
+    let start = index
+    index = string.index(index, offsetBy: count)
+    return string[start..<index]
+  }
+
   public mutating func advance(
     while condition: (Character) -> Bool
   ) -> T.SubSequence {
