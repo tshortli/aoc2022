@@ -19,7 +19,7 @@ final class Day16Tests: XCTestCase {
 
   func testPart2() {
     let solver = Day16.createForPuzzleInput()
-    XCTAssertEqual(solver.part2Solution, 0)
+    XCTAssertEqual(solver.part2Solution, 2416)
   }
 }
 

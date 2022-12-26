@@ -1,3 +1,5 @@
+import Algorithms
+
 public struct Day16: Solver {
   let input: String
 
@@ -14,14 +16,40 @@ public struct Day16: Solver {
     return map.bestFlow(
       currentID: Valve.ID(from: "AA"),
       remainingMin: 30,
-      flowPerMin: 0,
-      totalFlow: 0,
       remainingIDs: remainingIDs
     )
   }
 
   public var part2Solution: Int {
-    0
+    let map = ValveMap(valvesByID: valvesByID)
+    let allRemainingIDs = map.valvesByID.values
+      .filter { $0.flowRate > 0 }
+      .map(\.id)
+
+    let startID = Valve.ID(from: "AA")
+    var maxFlow = Int.min
+    for count in 1...(allRemainingIDs.count / 2) {
+      for elephantIDs in allRemainingIDs.combinations(ofCount: count) {
+        let usedIDsSet = Set(elephantIDs)
+        let humanIDs = allRemainingIDs.filter { !usedIDsSet.contains($0) }
+
+        let elephantFlow = map.bestFlow(
+          currentID: startID,
+          remainingMin: 26,
+          remainingIDs: elephantIDs
+        )
+
+        let humanFlow = map.bestFlow(
+          currentID: startID,
+          remainingMin: 26,
+          remainingIDs: humanIDs
+        )
+
+        maxFlow = max(maxFlow, elephantFlow + humanFlow)
+      }
+    }
+
+    return maxFlow
   }
 
   var valvesByID: [Valve.ID: Valve] {
@@ -70,9 +98,9 @@ public struct Day16: Solver {
     func bestFlow(
       currentID: Valve.ID,
       remainingMin: Int,
-      flowPerMin: Int,
-      totalFlow: Int,
-      remainingIDs: [Valve.ID]
+      remainingIDs: some Sequence<Valve.ID>,
+      flowPerMin: Int = 0,
+      totalFlow: Int = 0
     ) -> Int {
       let distances = distancesByID[currentID]!
       var maxFlow = Int.min
@@ -88,9 +116,9 @@ public struct Day16: Solver {
         maxFlow = max(maxFlow, bestFlow(
           currentID: id,
           remainingMin: newRemainingMin,
+          remainingIDs: newRemainingIDs,
           flowPerMin: newFlowPerMin,
-          totalFlow: newTotalFlow,
-          remainingIDs: newRemainingIDs
+          totalFlow: newTotalFlow
         ))
       }
 
