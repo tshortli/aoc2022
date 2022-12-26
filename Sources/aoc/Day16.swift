@@ -6,21 +6,17 @@ public struct Day16: Solver {
   }
 
   public var part1Solution: Int {
-    let valves = input.lines
-      .map { $0.parseValve() }
-      .reduce(into: [:]) { dict, valve in
-        dict[valve.name] = valve
-      }
+    let map = ValveMap(valvesByID: valvesByID)
+    let remainingIDs = map.valvesByID.values
+      .filter { $0.flowRate > 0 }
+      .map(\.id)
 
-    let flowValves = valves.values.filter { $0.flowRate > 0 }.map(\.name)
-
-    let map = ValveMap(valves: valves)
     return map.bestFlow(
-      currentValve: "AA",
+      currentID: Valve.ID(from: "AA"),
       remainingMin: 30,
       flowPerMin: 0,
       totalFlow: 0,
-      remainingValveNames: flowValves
+      remainingIDs: remainingIDs
     )
   }
 
@@ -28,64 +24,73 @@ public struct Day16: Solver {
     0
   }
 
-  struct ValveMap {
-    let valves: [String: Valve]
-    let distancesByValveName: [String: [String: Int]]
+  var valvesByID: [Valve.ID: Valve] {
+    input.lines
+      .map { Valve(from: $0) }
+      .reduce(into: [:]) { dict, valve in
+        dict[valve.id] = valve
+      }
+  }
 
-    init(valves: [String: Valve]) {
-      self.valves = valves
-      self.distancesByValveName = Self.distancesByValveName(valves: valves)
+  struct ValveMap {
+    let valvesByID: [Valve.ID: Valve]
+    let distancesByID: [Valve.ID: [Valve.ID: Int]]
+
+    init(valvesByID: [Valve.ID: Valve]) {
+      self.valvesByID = valvesByID
+      self.distancesByID = Self.distancesByValveID(valves: valvesByID)
     }
 
-    static func distancesByValveName(
-      valves: [String: Valve]
-    ) -> [String: [String: Int]] {
-      var distancesByValveName: [String: [String: Int]] = [:]
+    static func distancesByValveID(
+      valves: [Valve.ID: Valve]
+    ) -> [Valve.ID: [Valve.ID: Int]] {
+      var distancesByValveName: [Valve.ID: [Valve.ID: Int]] = [:]
       for fromValve in valves.values {
-        var distances: [String: Int] = [:]
-        var queue: [(String, Int)] = fromValve.tunnels.map { ($0, 1) }
+        var distances: [Valve.ID: Int] = [:]
+        var queue: [(Valve.ID, Int)] = fromValve.tunnels.map { ($0, 1) }
         var queueIndex = 0
 
         while queueIndex < queue.count {
-          let (toValveName, distance) = queue[queueIndex]
-          distances[toValveName] = distance
-          let toValve = valves[toValveName]!
+          let (toValveID, distance) = queue[queueIndex]
+          distances[toValveID] = distance
+          let toValve = valves[toValveID]!
           for tunnel in toValve.tunnels {
-            if distances[tunnel] == nil && tunnel != fromValve.name {
+            if distances[tunnel] == nil && tunnel != fromValve.id {
               queue.append((tunnel, distance + 1))
             }
           }
           queueIndex += 1
         }
 
-        distancesByValveName[fromValve.name] = distances
+        distancesByValveName[fromValve.id] = distances
       }
       return distancesByValveName
     }
 
     func bestFlow(
-      currentValve: String,
+      currentID: Valve.ID,
       remainingMin: Int,
       flowPerMin: Int,
       totalFlow: Int,
-      remainingValveNames: [String]
+      remainingIDs: [Valve.ID]
     ) -> Int {
-      let distances = distancesByValveName[currentValve]!
+      let distances = distancesByID[currentID]!
       var maxFlow = Int.min
-      for valveName in remainingValveNames {
-        let minToOpen = distances[valveName]! + 1
+      for id in remainingIDs {
+        let minToOpen = distances[id]! + 1
         let newRemainingMin = remainingMin - minToOpen
         if newRemainingMin < 0 { continue }
 
-        let newFlowPerMin = flowPerMin + valves[valveName]!.flowRate
+        let newFlowPerMin = flowPerMin + valvesByID[id]!.flowRate
         let newTotalFlow = totalFlow + flowPerMin * minToOpen
-        let newRemainingValveNames = remainingValveNames.filter { $0 != valveName }
+        let newRemainingIDs = remainingIDs.filter { $0 != id }
+
         maxFlow = max(maxFlow, bestFlow(
-          currentValve: valveName,
+          currentID: id,
           remainingMin: newRemainingMin,
           flowPerMin: newFlowPerMin,
           totalFlow: newTotalFlow,
-          remainingValveNames: newRemainingValveNames
+          remainingIDs: newRemainingIDs
         ))
       }
 
@@ -96,38 +101,46 @@ public struct Day16: Solver {
     }
   }
 
-  struct Valve: CustomStringConvertible {
+  struct Valve {
+    struct ID: Equatable, Hashable {
+      let value: Int
+
+      init(from string: some StringProtocol) {
+        var radix = 1, value = 0
+        for c in string.utf8.reversed() {
+          value += Int(c) * radix
+          radix *= Int(UInt8.max)
+        }
+        self.value = value
+      }
+    }
+
+    let id: ID
     let name: String
     let flowRate: Int
-    let tunnels: [String]
+    let tunnels: [ID]
 
-    var description: String {
-      "\(name) flowRate=\(flowRate), tunnels=\(String(tunnels.joined(by: ",")))"
+    init(from string: some StringProtocol) {
+      var parser = Parser(string)
+      parser.consume("Valve ")
+      self.name = String(parser.advance(2))
+      self.id = ID(from: name)
+      parser.consume(" has flow rate=")
+      self.flowRate = parser.parseInt()
+      parser.consume("; tunnel")
+      if parser.peek() == "s" {
+        parser.consume("s lead to valve")
+      } else {
+        parser.consume(" leads to valve")
+      }
+      parser.consume(parser.peek() == "s" ? "s " : " ") // Ugh why
+      var tunnels: [Day16.Valve.ID] = []
+      tunnels.append(Day16.Valve.ID(from: parser.advance(2)))
+      while parser.hasMore {
+        parser.consume(", ")
+        tunnels.append(Day16.Valve.ID(from: parser.advance(2)))
+      }
+      self.tunnels = tunnels
     }
-  }
-}
-
-private extension StringProtocol {
-  func parseValve() -> Day16.Valve {
-    var parser = Parser(self)
-    parser.consume("Valve ")
-    let name = String(parser.advance(2))
-    parser.consume(" has flow rate=")
-    let flowRate = parser.parseInt()
-    parser.consume("; tunnel")
-    if parser.peek() == "s" {
-      parser.consume("s lead to valve")
-    } else {
-      parser.consume(" leads to valve")
-    }
-    parser.consume(parser.peek() == "s" ? "s " : " ") // Ugh why
-    var tunnels: [String] = []
-    tunnels.append(String(parser.advance(2)))
-    while parser.hasMore {
-      parser.consume(", ")
-      tunnels.append(String(parser.advance(2)))
-    }
-
-    return Day16.Valve(name: name, flowRate: flowRate, tunnels: tunnels)
   }
 }
